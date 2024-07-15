@@ -1,32 +1,41 @@
-import listadeestados from './estados.js';
+async function fetchCep() {
+    let cep = document.getElementById('cep').value
+    const url = "https://viacep.com.br/ws/"+cep+"/json/"
 
-let tagUl = document.getElementById('lista-estados');
+    const response = await fetch(url);
+    const data = await response.json();
+    return data;
 
-/*let estado =listadeestados[0];
-tagUl .innerHTML=tagUl.innerHTML + "<li id= 'item-0'>Estado: " +estado.nome
-
-let tagLi = document.getElementById('Item-0');
-
-tagUl.addEventListener('click'),function(){
-alert ("clicou na li");
-
-});
-*/
+  }
 
 
 
+    async function listarCep(){
+        if (document.getElementById('cep').value.length > 7){
+            const lista = await fetchCep();
+            console.log(lista.erro)
+            if(typeof(lista) === 'object' && lista.erro != "true"){
+                console.log(lista)
+                document.getElementById('logradouro').value =lista.logradouro
+                document.getElementById('bairro').value =lista.bairro
+                document.getElementById('localidade').value =lista.localidade 
+                document.getElementById('uf').value =lista.uf
+            }
+            if(lista.erro == "true"){
+                document.getElementById('cep-error').innerHTML = "Digite um Cep Válido!"
+            }
+        }
+        else{
+            document.getElementById('cep-error').innerHTML = ""
+        }
+    };
+    
 
-for (let i = 0; i < listadeestados.length; i++) {
-    let estado = listadeestados[i];
-        tagUl.innerHTML = tagUl.innerHTML + `<li id="item-${i}">Estado: ${estado.nome}, Região: ${estado.regiao.nome} </li>`;
+
+    
+function busca(){
+    listarCep()
+
+    
 }
 
-    for (let i = 0; i < listadeestados.length; i++) {
-        let tagLi = document.getElementById(`item-${i}`);
-        tagLi.addEventListener('click',function(event){
-            console.log(event.target.outerHTML);
-        }) 
-        };
-
-        // tagUl.textcontent="conteudo de texto" // Renderiza tudo como texto puro
-        // tagUl.innerHTML="<li>Estado: Acre, região: Norte</li>"//Renderiza tag HTML
